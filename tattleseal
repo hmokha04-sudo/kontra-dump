@@ -1,0 +1,100 @@
+-- Script path: game:GetService("ReplicatedStorage").Shared.TattleSeal
+-- Decompile time: 4.52 ms
+
+local u2 = {PROTOCOL = "a0171d", CHALLENGE_ATTRIBUTE = "RelayTag"}
+u2.CHALLENGES = table.freeze({
+    table.freeze({Name = "Canaries", Bit = 128}),
+    table.freeze({Name = "Hooks", Bit = 1}),
+    table.freeze({Name = "Instances", Bit = 512}),
+    table.freeze({Name = "Libraries", Bit = 256}),
+    table.freeze({Name = "Gui", Bit = 64}),
+    table.freeze({Name = "Environment", Bit = 64}),
+    table.freeze({Name = "World", Bit = 16384}),
+    (table.freeze({Name = "Self", Bit = 1})),
+})
+
+local function Mix(a1, a2) -- Line: 56; types: a1: number, a2: number
+    local v1 = bit32.bxor(a1, a2)
+    v1 = bit32.bxor(v1, (bit32.lshift(v1, 6)))
+    v1 = bit32.bxor(v1, (bit32.rshift(v1, 21)))
+
+    return (bit32.bxor(v1, (bit32.lshift(v1, 7))))
+end
+
+local function Fold(a1, a2, a3, a4, a5, a6)
+    -- Line: 64
+    -- types: a1: number, a2: number, a3: number, a4: number, a5: number, a6: number
+    local v1 = bit32.bxor(a1, (bit32.bxor(a5, 4266460911)))
+    v1 = bit32.bxor(v1, (bit32.lshift(v1, 6)))
+    v1 = bit32.bxor(v1, (bit32.rshift(v1, 21)))
+    v1 = bit32.bxor(bit32.bxor(v1, (bit32.lshift(v1, 7))), (bit32.bxor(a6, 1479621860)))
+    v1 = bit32.bxor(v1, (bit32.lshift(v1, 6)))
+    v1 = bit32.bxor(v1, (bit32.rshift(v1, 21)))
+    v1 = bit32.bxor(bit32.bxor(v1, (bit32.lshift(v1, 7))), (bit32.bxor(a2, 2997021376)))
+    v1 = bit32.bxor(v1, (bit32.lshift(v1, 6)))
+    v1 = bit32.bxor(v1, (bit32.rshift(v1, 21)))
+    v1 = bit32.bxor(bit32.bxor(v1, (bit32.lshift(v1, 7))), (bit32.bxor(a4, 3107043835)))
+    v1 = bit32.bxor(v1, (bit32.lshift(v1, 6)))
+    v1 = bit32.bxor(v1, (bit32.rshift(v1, 21)))
+    v1 = bit32.bxor(bit32.bxor(v1, (bit32.lshift(v1, 7))), (bit32.bxor(a3, 964284217)))
+    v1 = bit32.bxor(v1, (bit32.lshift(v1, 6)))
+    v1 = bit32.bxor(v1, (bit32.rshift(v1, 21)))
+
+    return (bit32.bxor(v1, (bit32.lshift(v1, 7))))
+end
+
+function u2.Challenge(a1) -- Line: 80; upvalues: u2 (val); types: a1: number
+    if a1 == 0 then
+        return nil
+    end
+
+    return u2.CHALLENGES[a1 % #u2.CHALLENGES + 1]
+end
+
+function u2.Expected(a1) -- Line: 89; upvalues: u2 (val); types: a1: number
+    local v1 = u2.Challenge(a1)
+    return v1 and v1.Bit or 0
+end
+
+u2.KEY_ATTRIBUTE = "LoadEpoch"
+
+function u2.Seed(a1, a2, a3) -- Line: 107; types: a1: string, a2: number, a3: number
+    local v1
+    local v2 = bit32.bxor(3376506168, a2 % 4294967296)
+    v2 = bit32.bxor(v2, (bit32.lshift(v2, 6)))
+    v2 = bit32.bxor(v2, (bit32.rshift(v2, 21)))
+    local v3 = bit32.bxor(bit32.bxor(v2, (bit32.lshift(v2, 7))), a3 % 4294967296)
+    v3 = bit32.bxor(v3, (bit32.lshift(v3, 6)))
+    v3 = bit32.bxor(v3, (bit32.rshift(v3, 21)))
+    local v4 = bit32.bxor(v3, (bit32.lshift(v3, 7)))
+    local v5 = string.gsub(a1, "[0%-]", "")
+    v3 = #v5
+
+    for i = 1, v3 do
+        v1 = bit32.bxor(v4, (string.byte(v5, i)))
+        v1 = bit32.bxor(v1, (bit32.lshift(v1, 6)))
+        v1 = bit32.bxor(v1, (bit32.rshift(v1, 21)))
+        v4 = bit32.bxor(v1, (bit32.lshift(v1, 7)))
+    end
+
+    return v4
+end
+
+u2.LIVE_BIT = 32768
+
+function u2.Live(a1, a2) -- Line: 130; upvalues: u2 (val); types: a1: number, a2: number
+    local v1 = bit32.bxor(a1, (bit32.bxor(a2, 779850196)))
+    v1 = bit32.bxor(v1, (bit32.lshift(v1, 6)))
+    v1 = bit32.bxor(v1, (bit32.rshift(v1, 21)))
+
+    return bit32.bxor(v1, (bit32.lshift(v1, 7))) % 2 * u2.LIVE_BIT
+end
+
+function u2.Seal(a1, a2, a3, a4, a5, a6)
+    -- Line: 134
+    -- upvalues: Fold (val)
+    -- types: a1: number, a2: number, a3: number, a4: number, a5: number, a6: number
+    return (Fold(a1, a2, a3, a4, a5, a6))
+end
+
+return u2
